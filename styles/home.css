@@ -173,6 +173,13 @@ button[type="submit"]:hover {
     backdrop-filter: blur(10px);
 }
 
+.reaction button {
+    background: transparent;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
 .fa-heart {
     color: red;
 }
