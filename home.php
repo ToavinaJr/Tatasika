@@ -2,7 +2,8 @@
     session_start();
     include "verify_session.php";
     require_once "config.php";
-
+    require_once "components/Commentaire.php";
+    require_once "components/Reaction.php";
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -11,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil - Votre Site</title>
     <link rel="stylesheet" href="styles/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
     <div class="navbar">
@@ -29,7 +31,7 @@
                         <div class="avatar">
                             <img src="https://via.placeholder.com/150" alt="Avatar">
                         </div>
-                        <h2 class="name">John Doe</h2>
+                        <h2 class="name">RAKOTO</h2>
                     </div>
                 </li>
                 <li>Ami 2</li>
@@ -59,6 +61,7 @@
                     // Vérifier s'il y a des publications
                     if (!empty($publicationList)) {
                         // Parcourir les publications et les afficher
+                        echo "<h3> Toutes les publications :</h3>";
                         foreach ($publicationList as $publication) {
                             $user_id = $publication['id_compte'];
 
@@ -85,10 +88,10 @@
                             
                             $btn = "";
                             if ($_SESSION['user_id'] === $publication['id_compte'])
-                                $btn = "<a href='deletePublication.php?delete=$id_publication' class='x-btn'>x</a>";
-
-                            echo "<div class='post'> <h3 class='post-user'>" .  $user['nom'] . "</h3>" . $btn . "<div class='post-contenu'>". htmlspecialchars($publication['contenu']) . " </div>"; 
-
+                                $btn = "<a href='deletePublication.php?delete=$id_publication' class='x-btn'><i class='fa-solid fa-trash' style='color: blue;'></i></a>";
+                            
+                            echo "<div class='post'> <h3 class='post-user'> " . $user['nom'] . "</h3>" . "<div> Publié le : <span style='color: gray;'>" . htmlspecialchars($publication['date_creation']) . " </span> " . $btn ."<div style='padding: 20px 0'>" . $publication['contenu'] . "</div></div>"; 
+                            Reaction("publication", $publication['id_publication']);
                             // Afficher tous les commentaires
                             echo "<div class='comments'>";
                             foreach ($commentairesList as $com) {
@@ -96,14 +99,13 @@
                                 $stmt_nomCommentaire = $db_connexion->prepare($sql_nomCommentataire);
                                 $stmt_nomCommentaire->execute([$com['id_compte']]);
                                 $user_commentataire = $stmt_nomCommentaire->fetch(PDO::FETCH_ASSOC);
-                                echo "<div style='padding: 10px; border: 1px solid gray;'>";
-                                echo "  <span style='color:gray';>" . htmlspecialchars($user_commentataire['nom']) . "</span>";
-                                echo "  <p class='contenu'>". htmlspecialchars($com['contenu']) . "</p>";
-                                echo "</div>";
+
+                                Commentaire( htmlspecialchars($com['contenu']) , $user_commentataire['nom'], $publication['id_publication']);
+                                
                             }     
                             echo "</div>";
 
-                            echo "<form action='add_commentaire.php' method='get'><input type='text' style='padding: 10px; margin-top: 20px' placeholder='Ajouter un commentare' name='contenu'/> <button type='submit' value='$id_publication' name='id_publication'>Commenter</button></form>";
+                            echo "<form action='add_commentaire.php' method='get'><input type='text' style='padding: 10px; margin-top: 20px; min-width: 300px; margin-right: 10px; ' placeholder='Ajouter un commentaire' name='contenu'/> <button style='border-radius: 5px;' type='submit' value='$id_publication' name='id_publication'>Commenter</button></form>";
                             echo "</div>";                                    
                         }
 

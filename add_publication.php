@@ -11,10 +11,8 @@ if (isset($_POST['publication']) && trim($_POST['publication']) !== "") {
 
         $sql_addPublication = "INSERT INTO publication (id_compte, contenu) VALUES (? , ?) ";
         $stmt = $db_connexion->prepare($sql_addPublication);
-        $stmt->execute([ $_SESSION['user_id'], $publication]);
-        header('Location: /home.php');
+        $stmt->execute([ $_SESSION['user_id'], $publication]);        
     } 
-
-} else {
-    echo "Erreur : Aucune publication soumise.";
 }
+
+header('Location: /home.php');
