@@ -3,7 +3,8 @@ require_once "Reaction.php";
 
 function Commentaire($contenu, $nomCommentataire, $id_publication) {
 ?>
-    <div style='display: flex; flex-direction: column; gap: 10px; padding: 10px; border: 1px solid gray;'>
+    <div class="flex gap-8 border border-slate-400 p-4">
+        
         <h4 style='color:gray;'> 
             <?php echo $nomCommentataire; ?> 
         </h4>

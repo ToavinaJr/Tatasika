@@ -11,25 +11,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil - Votre Site</title>
-    <link rel="stylesheet" href="styles/home.css">
+    <!-- <link rel="stylesheet" href="styles/home.css"> -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="./output.css">
 </head>
 <body>
-    <div class="navbar">
-        <div class="logo">Tata Sika</div>
-        <div>Bienvenu <?php echo $_SESSION['user'] ;?></div>
-        <div class="nav-links">
-            <a href="logout.php">Deconnexion</a>
+    <div class="flex bg-blue-500 text-white p-4 text-md lg:text-xl justify-between items-center">
+        <div class="text-3xl">Tata Sika</div>
+        <h1>Bienvenu <?php echo $_SESSION['user'] ;?></h1>
+        <div class="bg-blue-300 p-2 rounded-md">
+            <a href="logout.php" class="w-ful h-full">Deconnexion</a>
         </div>
     </div>
-    <div class="container">
+    <div class="flex flex-col md:flex-row gap-8">
         <div class="sidebar">
-            <h3>Amis</h3>
-            <ul>
-                <li>
-                    <div class="card">
-                        <div class="avatar">
-                            <img src="https://via.placeholder.com/150" alt="Avatar">
+            <h3 class="text-3xl m-4 text-blue-500">Amis</h3>
+            <ul class="flex flex-col gap-4">
+                <li class="w-full p-4">
+                    <div class="flex w-[90vw] md:w-[200px] gap-4 items-center border border-slate-500 p-4">
+                        <div class="w-10 h-10">
+                            <img src="img/face-laugh-solid.svg" class="w-10 h-10" alt="Avatar">
                         </div>
                         <h2 class="name">RAKOTO</h2>
                     </div>
@@ -38,15 +39,14 @@
                 <li>Ami 3</li>
             </ul>
         </div>
-        <div class="feed">
-            <h2>Fil d'actualité</h2>
-            <div class="post-form">
-                <form action="add_publication.php" method="post">
-                    <textarea placeholder="Quoi de neuf ?" name="publication"></textarea>
-                    <button type="submit" >Publier</button>
-                </form>
-            </div>
-            <div class="posts">
+        <div class="flex-grow lg:w-[70vw]">
+            <h2 class="text-3xl m-4 text-blue-500 md:ml-0">Fil d'actualité</h2>
+            <form class="flex flex-col md:flex-row gap-8 bg-yellow m-4 md:ml-0" action="add_publication.php" method="post">
+                <textarea class="resize-none p-4 border w-[calc(100vw - 8px) ] md:w-[70%] border-blue-500" placeholder="Quoi de neuf ?" name="publication"></textarea>
+                <button class="bg-blue-300 py-4 px-[50px] text-white rounded-sm" type="submit" >Publier</button>
+            </form>
+
+            <div class="m-4 md:ml-0 flex flex-col gap-4">
             <?php
                 // Vérifier que la connexion à la base de données est initialisée
                 if (isset($db_connexion)) {
@@ -61,7 +61,7 @@
                     // Vérifier s'il y a des publications
                     if (!empty($publicationList)) {
                         // Parcourir les publications et les afficher
-                        echo "<h3> Toutes les publications :</h3>";
+                        // echo "<h3> Toutes les publications :</h3>";
                         foreach ($publicationList as $publication) {
                             $user_id = $publication['id_compte'];
 
@@ -88,27 +88,27 @@
                             
                             $btn = "";
                             if ($_SESSION['user_id'] === $publication['id_compte'])
-                                $btn = "<a href='deletePublication.php?delete=$id_publication' class='x-btn'><i class='fa-solid fa-trash' style='color: blue;'></i></a>";
+                                $btn = "<a href='deletePublication.php?delete=$id_publication' class='x-btn absolute right-4 top-4'><i class='fa-solid fa-trash' style='color: blue;'></i></a>";
                             
-                            echo "<div class='post'> <h3 class='post-user'> " . $user['nom'] . "</h3>" . "<div> Publié le : <span style='color: gray;'>" . htmlspecialchars($publication['date_creation']) . " </span> " . $btn ."<div style='padding: 20px 0'>" . $publication['contenu'] . "</div></div>"; 
+                            // Les conteneurs de chaque pubicaton
+                            echo "<div class='bg-slate-200 p-4 py-[20px] relative'> <h3 class='post-user text-xl text-blue-500'> " . $user['nom'] . "</h3>" . "<div> <span class='text-gray-500'>Publié le </span> : <span style='color: gray;'>" . htmlspecialchars($publication['date_creation']) . " </span> " . $btn ."<div style='padding: 20px 0'>" . $publication['contenu'] . "</div></div>"; 
                             Reaction("publication", $publication['id_publication']);
+                            
                             // Afficher tous les commentaires
-                            echo "<div class='comments'>";
+                            echo "<div class='comments flex flex-col gap-2'>";
                             foreach ($commentairesList as $com) {
                                 $sql_nomCommentataire = "SELECT * FROM compte WHERE id = ?";
                                 $stmt_nomCommentaire = $db_connexion->prepare($sql_nomCommentataire);
                                 $stmt_nomCommentaire->execute([$com['id_compte']]);
                                 $user_commentataire = $stmt_nomCommentaire->fetch(PDO::FETCH_ASSOC);
 
-                                Commentaire( htmlspecialchars($com['contenu']) , $user_commentataire['nom'], $publication['id_publication']);
-                                
+                                Commentaire( htmlspecialchars($com['contenu']) , $user_commentataire['nom'], $publication['id_publication']);                                
                             }     
                             echo "</div>";
 
-                            echo "<form action='add_commentaire.php' method='get'><input type='text' style='padding: 10px; margin-top: 20px; min-width: 300px; margin-right: 10px; ' placeholder='Ajouter un commentaire' name='contenu'/> <button style='border-radius: 5px;' type='submit' value='$id_publication' name='id_publication'>Commenter</button></form>";
+                            echo "<form action='add_commentaire.php' method='get' class='flex flex-col md:flex-row items-start gap-4 md:mt-2' ><input type='text' class='p-4' placeholder='Ajouter un commentaire' name='contenu'/> <button class='bg-blue-400 px-4 py-2 my-2 text-white' type='submit' value='$id_publication' name='id_publication'>Commenter</button></form>";
                             echo "</div>";                                    
                         }
-
                     } else {
                     echo "<p>Aucune publication n'a été trouvée.</p>";
                     }
