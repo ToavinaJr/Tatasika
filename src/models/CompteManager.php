@@ -84,4 +84,17 @@ class CompteManager {
 
         return $comptes;
     }
+
+    public function authentifyCompte(Compte $compte) : bool {
+
+        // Hashage du mot de passe
+        $query = "SELECT * FROM compte WHERE email = :email";
+
+        $statement = $this->database->prepare($query);
+        $statement->bindParam(':email', $compte->getEmail());
+        $statement->execute();
+
+        $compteResult = $statement->fetch(PDO::FETCH_ASSOC);
+        return password_verify($compte->getPassword(), $compteResult['password']);
+    }
 }

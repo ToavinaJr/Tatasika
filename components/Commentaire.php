@@ -19,7 +19,7 @@ function Commentaire($contenu, $nomCommentataire, $id_publication) {
                     <?php echo $nomCommentataire; ?>
                 </span>
                 
-                <p class='flex contenu text-gray-500 text-wrap overflow-x-auto bg-red-500'> 
+                <p class='flex contenu text-gray-500 text-wrap overflow-x-auto '> 
                     <?php echo $contenu; ?> 
                 </p>
             </div>
