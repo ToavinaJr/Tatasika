@@ -54,7 +54,7 @@ class PublicationManager {
     }
 
     public function delete(int $id) {
-        $query_delete_publication = "DELETE INTO compte WHERE id = :id";
+        $query_delete_publication = "DELETE INTO publication WHERE id = :id";
 
         // Preparing the query request
         $statement = $this->connexion->prepare($query_delete_publication);
@@ -67,7 +67,7 @@ class PublicationManager {
         $query_get_publication = "SELECT * FROM publication WHERE id_publication = :id";
 
         // Preparing the query request
-        $statement = $thdata_compteis->connexion->prepare($query_delete_publication);
+        $statement = $thdata_compteis->connexion->prepare($query_get_publication);
 
         $statement->bindParam(":id", $id);
         $statement->execute();
@@ -84,26 +84,15 @@ class PublicationManager {
     }
 
     public function getAll() {
-        $query_get_publication = "SELECT * FROM publication";
+        $query_getAll_publication = "SELECT * FROM publication";
 
         // Preparing the query request
-        $statement = $this->connexion->prepare($query_delete_publication);
+        $statement = $this->connexion->prepare($query_getAll_publication);
 
         $statement->execute();
 
         $all_data_publication = $statement->fetchAll();
-        $all_publication = [];
-
-        foreach( $all_publication as $data_publication) {            
-            $publication = new Publication();
-
-            $publication->setId( $data_publication['id_publication'] );
-            $publication->setIdCompte( $data_publication['id_compte'] );
-            $publication->setContenu( $data_publication['contenu'] );
-            
-            $all_publication[] = $publication;
-        }
-
-        return $all_publication;
+        
+        return $all_data_publication;
     }
 }

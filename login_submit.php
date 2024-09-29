@@ -10,18 +10,19 @@ $password = $_POST['password'];
 
 $compte_administrator = new CompteManager($db_connexion);
 $compte = $compte_administrator->search($email);
+var_dump( $compte);
 
 if ($compte){
     if ( password_verify($password, $compte['password']) ) {
         // Creating the session for the actual compte
-        $_SESSION['compte'] = $compte['nom'];
-        $_SESSION['compte_id'] = $compte['id'];
-
+        $_SESSION['user'] = $compte['nom'];
+        $_SESSION['user_id'] = $compte['id'];
+        var_dump($_SESSION) ;
         header("Location: home.php");
     }
     else {
         echo "Mot de passe incorecte";
-        echo "<a href='/'>Revenir a l'accueil</a>";
+        echo "<auser href='/'>Revenir a l'accueil</auser>";
     }
 }
 

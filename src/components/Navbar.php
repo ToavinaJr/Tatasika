@@ -1,4 +1,5 @@
 <?php
+    session_start();
     function Navbar() {
 ?>
     <div class="flex bg-blue-500 text-white p-4 text-md lg:text-xl justify-between items-center">

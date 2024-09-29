@@ -71,7 +71,7 @@ class CompteManager {
         $query_get_compte = "SELECT * FROM compte WHERE id = :id";
 
         // Preparing the query request
-        $statement = $this->connexion->prepare($query_delete_compte);
+        $statement = $this->connexion->prepare($query_get_compte);
 
         $statement->bindParam(":id", $id);
         $statement->execute();
@@ -79,10 +79,10 @@ class CompteManager {
         $data_compte = $statement->fetch(PDO::FETCH_ASSOC);
         $compte = new Compte();
 
-        $compte->setName( $compte['nom'] );
-        $compte->setFirstName( $compte['prenom'] );
-        $compte->setEmail( $compte['email'] );
-        $compte->setPassword( $compte['password'] );
+        $compte->setName( $data_compte['nom'] );
+        $compte->setFirstName( $data_compte['prenom'] );
+        $compte->setEmail( $data_compte['email'] );
+        $compte->setPassword( $data_compte['password'] );
 
         return $compte;
     }
@@ -100,7 +100,7 @@ class CompteManager {
 
         foreach( $all_compte as $data_compte) {            
             $compte = new Compte();
-            
+
             $compte->setId( $data_compte['id'] );
             $compte->setName( $data_compte['nom'] );
             $compte->setFirstName( $data_compte['prenom'] );

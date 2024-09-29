@@ -1,13 +1,28 @@
 <?php
     session_start();
+
     require_once "verify_session.php";
     require_once "config.php";
     require_once "src/components/Navbar.php";
     require_once "src/components/Head.php";
     require_once "src/components/Reaction.php";
     require_once "src/components/Commentaire.php";
+    require_once "src/models/Publication.php";
+    require_once "src/models/PublicationManager.php";
+    require_once "src/models/Compte.php";
+    require_once "src/models/CompteManager.php";
 
     Head("Accueil - Votre site");
+
+    // Vérifier que la connexion à la base de données est initialisée
+    if (isset($db_connexion)) {
+        $publication_manager = new PublicationManager($db_connexion);
+        $compte_manager = new CompteManager($db_connexion);
+    }
+    else {
+        echo "Erreur : connexion à la base de données non établie.";
+        exit();
+    }
 ?>
 <body style='height: 100vh;'>
     <?php Navbar(); ?>
@@ -37,94 +52,67 @@
 
             <div class="m-4 md:ml-0 flex flex-col gap-4">
             <?php
-                // Vérifier que la connexion à la base de données est initialisée
-                if (isset($db_connexion)) {
-                    // Préparer et exécuter la requête pour récupérer toutes les publications
-                    $sql_allPost = "SELECT * FROM publication ORDER BY date_creation DESC";
-                    $stmtPublication = $db_connexion->prepare($sql_allPost);
-                    $stmtPublication->execute();
+                
+                // Vérifier s'il y a des publications 
+                $publicationList = $publication_manager->getAll();
 
-                    // Récupérer toutes les publications
-                    $publicationList = $stmtPublication->fetchAll(PDO::FETCH_ASSOC);
-
-                    // Vérifier s'il y a des publications
-                    if (!empty($publicationList)) {
-                        // Parcourir les publications et les afficher
-                        // echo "<h3> Toutes les publications :</h3>";
-                        foreach ($publicationList as $publication) {
-                            $user_id = $publication['id_compte'];
-
-                            // Chercher le nom de l'user qui a publié le post
-                            $sql_searchName = "SELECT * FROM compte WHERE id = ? LIMIT  1";
-                            
-                            // Preparation de la requete
-                            $stmt = $db_connexion->prepare($sql_searchName);
-                            
-                            $stmt->execute([$user_id]);
-                            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                            
-                            // rEQUETE POUR AVOIR TOUS LES COMMENTAIRES
-                            $sql_searchComment = "SELECT * FROM commentaire WHERE id_publication = ?";
-
-                            // 
-                            $id_publication = $publication["id_publication"];
-                            $stmtCommentaire = $db_connexion->prepare($sql_searchComment);
-
-                            $stmtCommentaire->execute([$id_publication]);
-                            
-                            $commentairesList = $stmtCommentaire->fetchAll(PDO::FETCH_ASSOC);
-                            
-                            
-                            $btn = "";
-                            if ($_SESSION['user_id'] === $publication['id_compte'])
-                                $btn = "<a href='deletePublication.php?delete=$id_publication' class='x-btn absolute right-4 top-4'><i class='fa-solid fa-trash' style='color: blue;'></i></a>";
-                            
-                            // Les conteneurs de chaque pubicaton
-                            echo "<div class='bg-slate-200 p-4 py-[20px] relative'> <h3 class='post-user text-3xl text-blue-500'> " . $user['nom'] . "</h3>" . "<div> <span class='text-gray-500'>Publié le </span> : <span style='color: gray;'>" . htmlspecialchars($publication['date_creation']) . " </span> " . $btn ."<div class='bg-white flex justify-center items-center h-[200px] mb-4 text-gray-500' style='height:200px;'>" . $publication['contenu'] . "</div></div>"; 
-
-                            // Compter les nombre de réaction
-                            
-                            // Compter les nombres de love
-                            $sql_count_reactionLike = "SELECT * FROM reaction_publication WHERE id_publication = ? AND type = ?";
-                            $statement_countLike = $db_connexion->prepare($sql_count_reactionLike);
-                            $statement_countLike->execute([$publication['id_publication'], "love"]);
-                            $countLike = count($statement_countLike->fetchAll());
-
-                            // Compter les nombres de likes
-                            $sql_count_reactionHaha = "SELECT * FROM reaction_publication WHERE id_publication = ? AND type = ?";
-                            $statement_countHaha = $db_connexion->prepare($sql_count_reactionHaha);
-                            $statement_countHaha->execute([$publication['id_publication'], "haha"]);
-                            $countHaha = count($statement_countHaha->fetchAll());
-                            
-                            // Compter les nombres de likes dans la publication
-                            $sql_count_reactionAngry = "SELECT * FROM reaction_publication WHERE id_publication = ? AND type = ?";
-                            $statement_countAngry = $db_connexion->prepare($sql_count_reactionAngry);
-                            $statement_countAngry->execute([$publication['id_publication'], "angry"]);
-                            $countAngry = count($statement_countAngry->fetchAll());
-
-                            Reaction("publication", $publication['id_publication'], $countLike, $countAngry, $countHaha);
-                            
-                            // Afficher tous les commentaires
-                            echo "<div class='comments flex flex-col gap-2 my-2'>";
-                            foreach ($commentairesList as $com) {
-                                $sql_nomCommentataire = "SELECT * FROM compte WHERE id = ?";
-                                $stmt_nomCommentaire = $db_connexion->prepare($sql_nomCommentataire);
-                                $stmt_nomCommentaire->execute([$com['id_compte']]);
-                                $user_commentataire = $stmt_nomCommentaire->fetch(PDO::FETCH_ASSOC);
-
-                                Commentaire( htmlspecialchars($com['contenu']) , $user_commentataire['nom'], $publication['id_publication']);                                
-                            }     
-                            echo "</div>";
-
-                            echo "<form action='add_commentaire.php' method='get' class='flex flex-col md:flex-row items-start gap-4 md:mt-2' ><textarea type='text' class='p-4' placeholder='Ajouter un commentaire' style='resize:none; width: 280px;' name='contenu'></textarea> <button class='bg-blue-500 px-4 py-2 my-2 text-white' type='submit' value='$id_publication' name='id_publication' style='resize: none;'>Commenter</button></form>";
-                            echo "</div>";                                    
+                if (!empty($publicationList))  {                
+                    // Parcourir les publications et les afficher
+                    echo "<h3 class='text-xl text-blue-500'> Toutes les publications :</h3>";
+                    foreach ($publicationList as $publication) {
+                        // die();
+                        $publication_owner = $compte_manager->get($publication['id_compte']);
+                        $btn = "";
+                        // var_dump($_SESSION["user_id"], $publication['id_compte']);
+                        if ($_SESSION['user_id'] === $publication['id_compte']) {
+                            echo "eto";
+                            $btn = "<a href='deletePublication.php?delete=$id_publication' class='x-btn absolute right-4 top-4'><i class='fa-solid fa-trash' style='color: blue;'></i></a>";
                         }
-                    } else {
-                    echo "<p>Aucune publication n'a été trouvée.</p>";
+                        // Les conteneurs de chaque pubicaton
+                        echo "<div class='bg-slate-200 p-4 py-[20px] relative'> <h3 class='post-user text-3xl text-blue-500'> " . $publication_owner->getName() . "</h3>" . "<div> <span class='text-gray-500'>Publié le </span> : <span style='color: gray;'>" . htmlspecialchars($publication['date_creation']) . " </span> " . $btn ."<div class='bg-white flex justify-center items-center h-[200px] mb-4 text-gray-500' style='height:200px;'>" . $publication['contenu'] . "</div></div>"; 
+                        echo "eto";
+                        
+                        // Compter les nombre de réaction
+                        
+                        // Compter les nombres de love
+                        $sql_count_reactionLike = "SELECT * FROM reaction_publication WHERE id_publication = ? AND type = ?";
+                        $statement_countLike = $db_connexion->prepare($sql_count_reactionLike);
+                        $statement_countLike->execute([$publication['id_publication'], "love"]);
+                        $countLike = count($statement_countLike->fetchAll());
+                        
+                        // Compter les nombres de likes
+                        $sql_count_reactionHaha = "SELECT * FROM reaction_publication WHERE id_publication = ? AND type = ?";
+                        $statement_countHaha = $db_connexion->prepare($sql_count_reactionHaha);
+                        $statement_countHaha->execute([$publication['id_publication'], "haha"]);
+                        $countHaha = count($statement_countHaha->fetchAll());
+                        
+                        // Compter les nombres de likes dans la publication
+                        $sql_count_reactionAngry = "SELECT * FROM reaction_publication WHERE id_publication = ? AND type = ?";
+                        $statement_countAngry = $db_connexion->prepare($sql_count_reactionAngry);
+                        $statement_countAngry->execute([$publication['id_publication'], "angry"]);
+                        $countAngry = count($statement_countAngry->fetchAll());
+
+                        Reaction("publication", $publication['id_publication'], $countLike, $countAngry, $countHaha);
+                        
+                        // Afficher tous les commentaires
+                        echo "<div class='comments flex flex-col gap-2 my-2'>";
+                        foreach ($commentairesList as $com) {
+                            $sql_nomCommentataire = "SELECT * FROM compte WHERE id = ?";
+                            $stmt_nomCommentaire = $db_connexion->prepare($sql_nomCommentataire);
+                            $stmt_nomCommentaire->execute([$com['id_compte']]);
+                            $user_commentataire = $stmt_nomCommentaire->fetch(PDO::FETCH_ASSOC);
+
+                            Commentaire( htmlspecialchars($com['contenu']) , $user_commentataire['nom'], $publication['id_publication']);                                
+                        }     
+                        echo "</div>";
+                        
+                        echo "<form action='add_commentaire.php' method='get' class='flex flex-col md:flex-row items-start gap-4 md:mt-2' ><textarea type='text' class='p-4' placeholder='Ajouter un commentaire' style='resize:none; width: 280px;' name='contenu'></textarea> <button class='bg-blue-500 px-4 py-2 my-2 text-white' type='submit' value='$id_publication' name='id_publication' style='resize: none;'>Commenter</button></form>";
+                        echo "</div>";                                    
                     }
                 } else {
-                    echo "Erreur : connexion à la base de données non établie.";
+                echo "<p>Aucune publication n'a été trouvée.</p>";
                 }
+            
             ?>
 
             </div>
