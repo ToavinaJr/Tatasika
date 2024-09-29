@@ -9,7 +9,6 @@
 
     Head("Accueil - Votre site");
 ?>
-
 <body style='height: 100vh;'>
     <?php Navbar(); ?>
     

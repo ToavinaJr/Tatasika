@@ -87,6 +87,31 @@ class CompteManager {
         return $compte;
     }
 
+    public function getAll() {
+        $query_get_compte = "SELECT * FROM compte";
+
+        // Preparing the query request
+        $statement = $this->connexion->prepare($query_delete_compte);
+
+        $statement->execute();
+
+        $all_data_compte = $statement->fetchAll();
+        $all_compte = [];
+
+        foreach( $all_compte as $data_compte) {            
+            $compte = new Compte();
+            
+            $compte->setId( $data_compte['id'] );
+            $compte->setName( $data_compte['nom'] );
+            $compte->setFirstName( $data_compte['prenom'] );
+            $compte->setEmail( $data_compte['email'] );
+            $compte->setPassword( $data_compte['password'] );
+
+            $all_compte[] = $compte;
+        }
+
+        return $all_compte;
+    }
     public function verify(Compte $compte) : bool {
         $query_verify_compte = "SELECT * FROM compte WHERE email = :email AND password = :password";
 
