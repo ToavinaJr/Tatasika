@@ -13,7 +13,7 @@
     require_once "src/models/CompteManager.php";
     require_once "src/models/Comment.php";
     require_once "src/models/CommentManager.php";
-    
+
     Head("Accueil - Votre site");
 
     // Vérifier que la connexion à la base de données est initialisée
@@ -68,12 +68,11 @@
                         $btn = "";
                         // var_dump($_SESSION["user_id"], $publication['id_compte']);
                         if ($_SESSION['user_id'] === $publication['id_compte']) {
-                            echo "eto";
+                            $id_publication = $publication['id_publication'];
                             $btn = "<a href='deletePublication.php?delete=$id_publication' class='x-btn absolute right-4 top-4'><i class='fa-solid fa-trash' style='color: blue;'></i></a>";
                         }
                         // Les conteneurs de chaque pubicaton
                         echo "<div class='bg-slate-200 p-4 py-[20px] relative'> <h3 class='post-user text-3xl text-blue-500'> " . $publication_owner->getName() . "</h3>" . "<div> <span class='text-gray-500'>Publié le </span> : <span style='color: gray;'>" . htmlspecialchars($publication['date_creation']) . " </span> " . $btn ."<div class='bg-white flex justify-center items-center h-[200px] mb-4 text-gray-500' style='height:200px;'>" . $publication['contenu'] . "</div></div>"; 
-                        echo "eto";
                         
                         // Compter les nombre de réaction
                         
@@ -100,8 +99,10 @@
                         // Afficher tous les commentaires
                         echo "<div class='comments flex flex-col gap-2 my-2'>";
                         $commentairesList = $comment_manager->getAll($publication['id_publication']);
-                        foreach ($commentairesList as $com) {
-                            Commentaire( htmlspecialchars($com['contenu']) , $com['nom'], $publication['id_publication']);     
+                        foreach ($commentairesList as $com) {                            
+                            $comment_owner = $compte_manager->get($com['id_compte']);
+                            
+                            Commentaire( htmlspecialchars($com['contenu']) , $comment_owner->getName(), $publication['id_publication']);     
                         }     
                         echo "</div>";
                         

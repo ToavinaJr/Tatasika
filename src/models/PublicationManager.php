@@ -65,7 +65,8 @@ class PublicationManager {
 
     public function get(int $id) : Publication {
         $query_get_publication = "SELECT * FROM publication WHERE id_publication = :id";
-
+        require_once "src/models/Compte.php";
+        require_once "src/models/CompteManager.php";
         // Preparing the query request
         $statement = $thdata_compteis->connexion->prepare($query_get_publication);
 
@@ -84,7 +85,7 @@ class PublicationManager {
     }
 
     public function getAll() {
-        $query_getAll_publication = "SELECT * FROM publication";
+        $query_getAll_publication = "SELECT * FROM publication ORDER BY date_creation DESC";
 
         // Preparing the query request
         $statement = $this->connexion->prepare($query_getAll_publication);
