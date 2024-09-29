@@ -1,30 +1,17 @@
 <?php
     session_start();
-    include "verify_session.php";
+    require_once "verify_session.php";
     require_once "config.php";
-    require_once "components/Commentaire.php";
-    require_once "components/Reaction.php";
+    require_once "src/components/Navbar.php";
+    require_once "src/components/Head.php";
+    require_once "src/components/Reaction.php";
+    require_once "src/components/Commentaire.php";
+
+    Head("Accueil - Votre site");
 ?>
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Accueil - Votre Site</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="./output.css">
-</head>
+
 <body style='height: 100vh;'>
-    <div class="flex bg-blue-500 text-white p-4 text-md lg:text-xl justify-between items-center">
-        <div class="text-3xl">Tata Sika</div>
-        <h1>
-            Bienvenu <?php echo $_SESSION['user'] ;?>
-        </h1>
-        
-        <div class="bg-blue-300 p-2 rounded-md">
-            <a href="logout.php" class="w-ful h-full">Deconnexion</a>
-        </div>
-    </div>
+    <?php Navbar(); ?>
     
     <div class="flex flex-col md:flex-row gap-8">
         <div class="sidebar">
