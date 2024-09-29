@@ -75,7 +75,7 @@ class CommentManager {
         $data_commentaire = $statement->fetch(PDO::FETCH_ASSOC);
         $compte = new Comment();
 
-        $commentaire->setId( $data_commentaire['id_commzntaire'] );
+        $commentaire->setId( $data_commentaire['id_commentaire'] );
         $commentaire->setIdPublication( $data_commentaire['id_publication'] );
         $commentaire->setCompte( $data_commentaire['id_compte'] );
         $commentaire->setContenu( $data_commentaire['contenu'] );
@@ -83,12 +83,12 @@ class CommentManager {
         return $commentaire;
     }
 
-    public function getAll() {
-        $query_getAll_commentaire = "SELECT * FROM commentaire";
+    public function getAll(int $idPost) {
+        $query_getAll_commentaire = "SELECT * FROM commentaire WHERE id_publication = :id_publication";
 
         // Preparing the query request
         $statement = $this->connexion->prepare($query_getAll_commentaire);
-
+        $statement->bindParam(":id_publication", $idPost);
         $statement->execute();
 
         $all_data_commentaire = $statement->fetchAll();

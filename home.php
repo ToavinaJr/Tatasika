@@ -11,13 +11,16 @@
     require_once "src/models/PublicationManager.php";
     require_once "src/models/Compte.php";
     require_once "src/models/CompteManager.php";
-
+    require_once "src/models/Comment.php";
+    require_once "src/models/CommentManager.php";
+    
     Head("Accueil - Votre site");
 
     // Vérifier que la connexion à la base de données est initialisée
     if (isset($db_connexion)) {
         $publication_manager = new PublicationManager($db_connexion);
         $compte_manager = new CompteManager($db_connexion);
+        $comment_manager = new CommentManager($db_connexion);
     }
     else {
         echo "Erreur : connexion à la base de données non établie.";
@@ -96,16 +99,13 @@
                         
                         // Afficher tous les commentaires
                         echo "<div class='comments flex flex-col gap-2 my-2'>";
+                        $commentairesList = $comment_manager->getAll($publication['id_publication']);
                         foreach ($commentairesList as $com) {
-                            $sql_nomCommentataire = "SELECT * FROM compte WHERE id = ?";
-                            $stmt_nomCommentaire = $db_connexion->prepare($sql_nomCommentataire);
-                            $stmt_nomCommentaire->execute([$com['id_compte']]);
-                            $user_commentataire = $stmt_nomCommentaire->fetch(PDO::FETCH_ASSOC);
-
-                            Commentaire( htmlspecialchars($com['contenu']) , $user_commentataire['nom'], $publication['id_publication']);                                
+                            Commentaire( htmlspecialchars($com['contenu']) , $com['nom'], $publication['id_publication']);     
                         }     
                         echo "</div>";
                         
+                        $id_publication = $publication['id_publication'];     
                         echo "<form action='add_commentaire.php' method='get' class='flex flex-col md:flex-row items-start gap-4 md:mt-2' ><textarea type='text' class='p-4' placeholder='Ajouter un commentaire' style='resize:none; width: 280px;' name='contenu'></textarea> <button class='bg-blue-500 px-4 py-2 my-2 text-white' type='submit' value='$id_publication' name='id_publication' style='resize: none;'>Commenter</button></form>";
                         echo "</div>";                                    
                     }
