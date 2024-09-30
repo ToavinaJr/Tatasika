@@ -3,8 +3,8 @@ require_once "Reaction.php";
 
 function Commentaire($contenu, $nomCommentataire, $id_publication) {
 ?>
-    <div class="flex flex-col gap-2 border border-slate-400 p-4">
-        <div class="flex gap-2 p-2 rounded-md text-wrap" style="background-color: #f5f5f5;">
+    <div class="flex flex-col gap-2 border bg-slate-800 border-slate-800 p-4">
+        <div class="flex gap-2 p-2 rounded-md text-wrap bg-slate-500">
             <div class="flex gap-4">                                
                 <img 
                     src="../img/face-laugh-solid.svg" 
@@ -19,7 +19,7 @@ function Commentaire($contenu, $nomCommentataire, $id_publication) {
                     <?= htmlspecialchars($nomCommentataire); ?>
                 </span>
                 
-                <p class="flex contenu w-[100px] lg:w-[380px] text-gray-500 ">
+                <p class="flex contenu w-[100px] lg:w-[380px] text-gray-200 ">
                     <?= htmlspecialchars($contenu); ?>
                 </p>
 

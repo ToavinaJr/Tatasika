@@ -44,4 +44,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "message" => "ID de la publication manquant"
         ]);
     }
+    header("Refresh: 5");
+
 }

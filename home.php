@@ -27,11 +27,11 @@
         exit();
     }
 ?>
-<body style='height: 100vh; width: 100vw; overflow-x: hidden;'>
+<body class="h-full w-full overflow-x-hidden bg-slate-800 text-white">
     <?php Navbar(); ?>
     
     <div class="flex flex-col md:flex-row gap-8">
-        <div class="sidebar">
+        <div class="sidebar bg-slate-800">
             <h3 class="text-3xl m-4 text-blue-500">Amis</h3>
             <ul class="flex flex-col gap-4">
                 <li class="w-full p-4">
@@ -49,8 +49,8 @@
         <div class="flex-grow lg:w-[70vw] lg:max-h-[100vh] overflow-x-hidden overflow-y-scroll">
             <h2 class="text-3xl m-4 text-blue-500 md:ml-0">Fil d'actualité</h2>
             <form class="flex flex-col md:flex-row gap-8 bg-yellow m-4 md:ml-0" action="add_publication.php" method="post">
-                <textarea class="resize-none p-4 border w-[calc(100vw - 8px) ] md:w-[70%] border-blue-500" placeholder="Quoi de neuf ?" name="publication"></textarea>
-                <button class="bg-blue-500 py-4 px-[50px] text-white rounded-sm" type="submit" >Publier</button>
+                <textarea class="resize-none p-4 border rounded-md border-none w-[calc(100vw - 8px) ] bg-slate-500 text-white md:w-[70%] border-blue-500" placeholder="Quoi de neuf ?" name="publication"></textarea>
+                <button class="hover:bg-blue-500 py-4 px-[50px] text-white rounded-xl bg-blue-800" type="submit" >Publier</button>
             </form>
 
             <div class="m-4 md:ml-0 flex flex-col gap-4">
@@ -73,7 +73,9 @@
                             $btn = "<a href='#' onClick='deletePublication($id_publication)' class='x-btn absolute right-4 top-4'><i class='fa-solid fa-trash' style='color: blue;'></i></a>";
                         }
                         // Les conteneurs de chaque pubicaton
-                        echo "<div class='bg-slate-200 p-4 py-[20px] relative'> <h3 class='post-user text-3xl text-blue-500'> " . $publication_owner->getName() . "</h3>" . "<div> <span class='text-gray-500'>Publié le </span> : <span style='color: gray;'>" . htmlspecialchars($publication['date_creation']) . " </span> " . $btn ."<div class='bg-white flex justify-center items-center h-[200px] mb-4 text-gray-500' style='height:200px;'>" . $publication['contenu'] . "</div></div>"; 
+                        echo "<div class='bg-slate-700 p-4 py-[20px] relative'> <h3 class='post-user text-3xl text-blue-500'> " . $publication_owner->getName() . "</h3>";
+                        echo "<div> <span class='text-gray-100'>Publié le </span> : <span   class='text-gray-100'>" . htmlspecialchars($publication['date_creation']) . " </span> " . $btn ."<div class='bg-slate-800 flex justify-center items-center h-[200px] mb-4 text-gray-100 text-wrap break-words overflow-x-scrool'>" . $publication['contenu'] . "</div>";
+                        echo "</div>"; 
                         
                         $sql_count_reactions = "SELECT type, COUNT(*) as total FROM reaction_publication WHERE id_publication = ? GROUP BY type";
                         $statement_countReactions = $db_connexion->prepare($sql_count_reactions);
@@ -97,7 +99,7 @@
                         echo "</div>";
                         
                         $id_publication = $publication['id_publication'];     
-                        echo "<form action='add_commentaire.php' method='get' class='flex flex-col md:flex-row items-start gap-4 md:mt-2' ><textarea type='text' class='p-4' placeholder='Ajouter un commentaire' style='resize:none; width: 280px;' name='contenu'></textarea> <button class='bg-blue-500 px-4 py-2 my-2 text-white' type='submit' value='$id_publication' name='id_publication' style='resize: none;'>Commenter</button></form>";
+                        echo "<form action='add_commentaire.php' method='get' class='flex flex-col md:flex-row items-start gap-4 md:mt-2' ><textarea type='text' class='p-4 bg-slate-600' placeholder='Ajouter un commentaire' style='resize:none; width: 280px;' name='contenu'></textarea> <button class='bg-blue-500 px-4 py-2 my-2 text-white' type='submit' value='$id_publication' name='id_publication' style='resize: none;'>Commenter</button></form>";
                         echo "</div>";
                         // echo "</div>";                                    
                     }

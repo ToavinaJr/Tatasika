@@ -8,8 +8,8 @@
             Bienvenu <?= htmlspecialchars($_SESSION['user']) ;?>
         </h1>
         
-        <div class="bg-blue-300 p-2 rounded-md">
-            <a href="logout.php" class="w-ful h-full">Deconnexion</a>
+        <div class="bg-blue-800 p-2 rounded-md">
+            <a href="logout.php" class="w-ful h-full" >Deconnexion</a>
         </div>
     </div>
 <?php
