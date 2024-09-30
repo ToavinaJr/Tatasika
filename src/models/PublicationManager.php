@@ -54,7 +54,7 @@ class PublicationManager {
     }
 
     public function delete(int $id) {
-        $query_delete_publication = "DELETE INTO publication WHERE id = :id";
+        $query_delete_publication = "DELETE FROM publication WHERE id_publication = :id";
 
         // Preparing the query request
         $statement = $this->connexion->prepare($query_delete_publication);
