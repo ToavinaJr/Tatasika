@@ -7,6 +7,6 @@
 </head>
 <body>
     <button id="send-btn">Send Data</button>
-    <script src="api/sendData.js"></script>
+    <script src="src/api/js/get_data.js"></script>
 </body>
 </html>

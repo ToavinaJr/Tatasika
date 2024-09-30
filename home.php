@@ -27,7 +27,7 @@
         exit();
     }
 ?>
-<body style='height: 100vh;'>
+<body style='height: 100vh; width: 100vw; overflow-x: hidden;'>
     <?php Navbar(); ?>
     
     <div class="flex flex-col md:flex-row gap-8">
@@ -46,7 +46,7 @@
                 <li>Ami 3</li>
             </ul>
         </div>
-        <div class="flex-grow lg:w-[70vw]">
+        <div class="flex-grow lg:w-[70vw] lg:max-h-[100vh] overflow-x-hidden overflow-y-scroll">
             <h2 class="text-3xl m-4 text-blue-500 md:ml-0">Fil d'actualité</h2>
             <form class="flex flex-col md:flex-row gap-8 bg-yellow m-4 md:ml-0" action="add_publication.php" method="post">
                 <textarea class="resize-none p-4 border w-[calc(100vw - 8px) ] md:w-[70%] border-blue-500" placeholder="Quoi de neuf ?" name="publication"></textarea>
@@ -61,7 +61,8 @@
 
                 if (!empty($publicationList))  {                
                     // Parcourir les publications et les afficher
-                    echo "<h3 class='text-xl text-blue-500'> Toutes les publications :</h3>";
+                    echo "<h3 class='text-xl text-blue-500'> Toutes les publications :</h3>"; 
+                    echo "<div class='flex flex-col gap-4'>";
                     foreach ($publicationList as $publication) {
                         // die();
                         $publication_owner = $compte_manager->get($publication['id_compte']);
@@ -69,12 +70,10 @@
                         // var_dump($_SESSION["user_id"], $publication['id_compte']);
                         if ($_SESSION['user_id'] === $publication['id_compte']) {
                             $id_publication = $publication['id_publication'];
-                            $btn = "<a href='deletePublication.php?delete=$id_publication' class='x-btn absolute right-4 top-4'><i class='fa-solid fa-trash' style='color: blue;'></i></a>";
+                            $btn = "<a href='#' onClick='deletePublication($id_publication)' class='x-btn absolute right-4 top-4'><i class='fa-solid fa-trash' style='color: blue;'></i></a>";
                         }
                         // Les conteneurs de chaque pubicaton
                         echo "<div class='bg-slate-200 p-4 py-[20px] relative'> <h3 class='post-user text-3xl text-blue-500'> " . $publication_owner->getName() . "</h3>" . "<div> <span class='text-gray-500'>Publié le </span> : <span style='color: gray;'>" . htmlspecialchars($publication['date_creation']) . " </span> " . $btn ."<div class='bg-white flex justify-center items-center h-[200px] mb-4 text-gray-500' style='height:200px;'>" . $publication['contenu'] . "</div></div>"; 
-                        
-                        // Compter les nombre de réaction
                         
                         // Compter les nombres de love
                         $sql_count_reactionLike = "SELECT * FROM reaction_publication WHERE id_publication = ? AND type = ?";
@@ -108,7 +107,8 @@
                         
                         $id_publication = $publication['id_publication'];     
                         echo "<form action='add_commentaire.php' method='get' class='flex flex-col md:flex-row items-start gap-4 md:mt-2' ><textarea type='text' class='p-4' placeholder='Ajouter un commentaire' style='resize:none; width: 280px;' name='contenu'></textarea> <button class='bg-blue-500 px-4 py-2 my-2 text-white' type='submit' value='$id_publication' name='id_publication' style='resize: none;'>Commenter</button></form>";
-                        echo "</div>";                                    
+                        echo "</div>";
+                        // echo "</div>";                                    
                     }
                 } else {
                 echo "<p>Aucune publication n'a été trouvée.</p>";
@@ -119,5 +119,7 @@
             </div>
         </div>
     </div>
+    <!-- <script src="src/api/js/get_data.js"></script> -->
+    <script src="src/api/js/delete_publication.js"></script>
 </body>
 </html>

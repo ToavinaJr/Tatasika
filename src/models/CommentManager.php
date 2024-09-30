@@ -16,10 +16,19 @@ class CommentManager {
 
         // Binding the parameters
         $statement->bindParam(":id_compte", $commentaire->getIdCompte());
-        $statement->bindParam(":contenu", $compte->getContenu());    
+        $statement->bindParam(":contenu", $commentaire->getContenu());    
 
         // 
         $statement->execute();
+    }
+
+    public function getAllComments() {
+        $query_get_all_commentaire = "SELECT * FROM commentaire";
+        $statement = $this->connexion->prepare($query_get_all_commentaire);
+        $statement->execute();
+        $response = $statement->fetchAll();
+
+        return $response;
     }
 
     public function search(int $id_commentaire, int $id_compte) {
@@ -73,11 +82,11 @@ class CommentManager {
         $statement->execute();
 
         $data_commentaire = $statement->fetch(PDO::FETCH_ASSOC);
-        $compte = new Comment();
+        $commentaire = new Comment();
 
         $commentaire->setId( $data_commentaire['id_commentaire'] );
         $commentaire->setIdPublication( $data_commentaire['id_publication'] );
-        $commentaire->setCompte( $data_commentaire['id_compte'] );
+        $commentaire->setIdCompte( $data_commentaire['id_compte'] );
         $commentaire->setContenu( $data_commentaire['contenu'] );
 
         return $commentaire;

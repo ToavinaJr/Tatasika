@@ -16,7 +16,7 @@ class PublicationManager {
 
         // Binding the parameters
         $statement->bindParam(":id_compte", $publication->getIdCompte());
-        $statement->bindParam(":contenu", $compte->getContenu());    
+        $statement->bindParam(":contenu", $publication->getContenu());    
 
         // 
         $statement->execute();

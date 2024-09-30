@@ -3,11 +3,11 @@ session_start();
 require_once "config.php";
 require_once "verify_session.php";
 
-if (isset($_GET['type']) && isset($_GET['target']) && isset($_GET['id_target'])) {
-    $type = $_GET['type'];
-    $target = $_GET['target'];
-    $id_target = $_GET['id_target'];
-    $userId = $_SESSION['user_id'];
+if (isset($_GET['type'], $_GET['target'], $_GET['id_target'])) {
+    $type       =   $_GET['type'];
+    $target     =   $_GET['target'];
+    $id_target  =   $_GET['id_target'];
+    $userId     =   $_SESSION['user_id'];
 
     $sql_commentaire = "";
     var_dump($id_target);
@@ -32,7 +32,7 @@ if (isset($_GET['type']) && isset($_GET['target']) && isset($_GET['id_target']))
                     echo $resp_reaction['type'];
                     $sql_commentaire = "DELETE FROM reaction_commentaire WHERE id_commentaire = ? AND id_compte = ?";
                 } elseif ($target === "publication") {
-                    echo $resp_reaction['type'];
+                     $resp_reaction['type'];
                     $sql_commentaire = "DELETE FROM reaction_publication WHERE id_publication = ? AND id_compte = ?";
                 }
             } else {
@@ -48,12 +48,10 @@ if (isset($_GET['type']) && isset($_GET['target']) && isset($_GET['id_target']))
             $stmt_commentaire = $db_connexion->prepare($sql_commentaire);
             if ($resp_reaction) {
                 // Suppression de la réaction
-                $stmt_commentaire->execute([$id_target, $userId]);
-                echo "voafafa";
+                $stmt_commentaire->execute([$id_target, $userId]);                
             } else {
                 // Insertion de la nouvelle réaction
                 $stmt_commentaire->execute([$type, $userId , $id_target]);
-                echo "mampiditra";
             }
         } catch (PDOException $e) {
             echo "Erreur de base de données : " . $e->getMessage();
