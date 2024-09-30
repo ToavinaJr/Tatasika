@@ -75,23 +75,14 @@
                         // Les conteneurs de chaque pubicaton
                         echo "<div class='bg-slate-200 p-4 py-[20px] relative'> <h3 class='post-user text-3xl text-blue-500'> " . $publication_owner->getName() . "</h3>" . "<div> <span class='text-gray-500'>Publié le </span> : <span style='color: gray;'>" . htmlspecialchars($publication['date_creation']) . " </span> " . $btn ."<div class='bg-white flex justify-center items-center h-[200px] mb-4 text-gray-500' style='height:200px;'>" . $publication['contenu'] . "</div></div>"; 
                         
-                        // Compter les nombres de love
-                        $sql_count_reactionLike = "SELECT * FROM reaction_publication WHERE id_publication = ? AND type = ?";
-                        $statement_countLike = $db_connexion->prepare($sql_count_reactionLike);
-                        $statement_countLike->execute([$publication['id_publication'], "love"]);
-                        $countLike = count($statement_countLike->fetchAll());
-                        
-                        // Compter les nombres de likes
-                        $sql_count_reactionHaha = "SELECT * FROM reaction_publication WHERE id_publication = ? AND type = ?";
-                        $statement_countHaha = $db_connexion->prepare($sql_count_reactionHaha);
-                        $statement_countHaha->execute([$publication['id_publication'], "haha"]);
-                        $countHaha = count($statement_countHaha->fetchAll());
-                        
-                        // Compter les nombres de likes dans la publication
-                        $sql_count_reactionAngry = "SELECT * FROM reaction_publication WHERE id_publication = ? AND type = ?";
-                        $statement_countAngry = $db_connexion->prepare($sql_count_reactionAngry);
-                        $statement_countAngry->execute([$publication['id_publication'], "angry"]);
-                        $countAngry = count($statement_countAngry->fetchAll());
+                        $sql_count_reactions = "SELECT type, COUNT(*) as total FROM reaction_publication WHERE id_publication = ? GROUP BY type";
+                        $statement_countReactions = $db_connexion->prepare($sql_count_reactions);
+                        $statement_countReactions->execute([$publication['id_publication']]);
+                        $reactions = $statement_countReactions->fetchAll(PDO::FETCH_KEY_PAIR);
+
+                        $countLike = $reactions['love'] ?? 0;
+                        $countHaha = $reactions['haha'] ?? 0;
+                        $countAngry = $reactions['angry'] ?? 0;
 
                         Reaction("publication", $publication['id_publication'], $countLike, $countAngry, $countHaha);
                         

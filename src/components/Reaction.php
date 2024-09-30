@@ -2,20 +2,20 @@
     function Reaction($target, $idTarget, $countLike, $countAngry, $countHaha) {
 ?>
     <div class ="reaction flex flex-col gap-2">
-        <div>
+        <div class="flex gap-4">
             <a href="handle_reaction.php?type=love&target=<?php echo $target; ?>&id_target=<?php echo $idTarget; ?>">
-                <i class="text-blue-500 fa-solid fa-thumbs-up"></i>
+                <i class="text-blue-500 fa-solid fa-thumbs-up text-3xl hover:scale-125"></i>
                 <!-- Love -->
             </a>
             <a 
                 href="handle_reaction.php?type=angry&target=<?php echo $target; ?>&id_target=<?php echo $idTarget; ?>">
-                <i class="text-red-500 fa-solid fa-face-angry"></i>
+                <i class="text-red-500 fa-solid fa-face-angry text-3xl hover:scale-125"></i>
             </a>
             <a 
                 href="handle_reaction.php?type=haha&target=<?php echo $target; ?>&id_target=<?php echo $idTarget; ?>"
                 class="w-6 h-6"
             >
-                <i class="fa-solid fa-face-grin-tears text-yellow-500"></i>
+                <i class="fa-solid fa-face-grin-tears text-yellow-500 text-3xl hover:scale-125"></i>
                 <!-- Haha -->
             </a>
         </div>

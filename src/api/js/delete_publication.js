@@ -1,6 +1,5 @@
 function deletePublication(id) {
-    console.log(id);
-    fetch("http://localhost:12345/src/api/php/delete_publication.php",
+    fetch("src/api/php/delete_publication.php",
         {
             method: "POST",
             headers: {
