@@ -3,8 +3,8 @@ require_once "Reaction.php";
 
 function Commentaire($contenu, $nomCommentataire, $id_publication) {
 ?>
-    <div class="flex flex-col gap-2 border bg-slate-800 border-slate-800 p-4">
-        <div class="flex gap-2 p-2 rounded-md text-wrap bg-slate-500">
+    <div class="flex flex-col gap-2 border bg-slate-800  rounded-md border-slate-800 p-4">
+        <div class="flex gap-2 p-2 rounded-md text-wrap  bg-slate-500">
             <div class="flex gap-4">                                
                 <img 
                     src="../img/face-laugh-solid.svg" 

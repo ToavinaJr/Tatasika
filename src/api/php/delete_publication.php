@@ -7,7 +7,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Récupérer le corps de la requête JSON
     $json = file_get_contents('php://input');
     
-    var_dump($_POST);
     // Décoder les données JSON
     $data = json_decode($json, true);
 
@@ -44,6 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "message" => "ID de la publication manquant"
         ]);
     }
-    header("Refresh: 5");
 
+    header("Location: /home.php");
 }

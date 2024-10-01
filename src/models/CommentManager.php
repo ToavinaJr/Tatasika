@@ -8,15 +8,16 @@ class CommentManager {
     }
 
     public function add(Comment $commentaire) {
-        $query_add_commentaire = "INSERT INTO commentaire (id_compte, contenu) 
-                            VALUES ( :id_compte, :contenu)";
+        $query_add_commentaire = "INSERT INTO commentaire (id_compte, contenu, id_publication) 
+                            VALUES ( :id_compte, :contenu, :id_publication)";
 
         // Preparing the query request
         $statement = $this->connexion->prepare($query_add_commentaire);
 
         // Binding the parameters
         $statement->bindParam(":id_compte", $commentaire->getIdCompte());
-        $statement->bindParam(":contenu", $commentaire->getContenu());    
+        $statement->bindParam(":contenu", $commentaire->getContenu());   
+        $statement->bindParam(":id_publication", $commentaire->getIdPublication()); 
 
         // 
         $statement->execute();

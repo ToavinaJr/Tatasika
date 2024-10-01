@@ -5,18 +5,16 @@ function deletePublication(id) {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({"publication_id": id}) // Envoi du bon paramètre
-    })
-    .then(response => response.json()) // Transformation de la réponse en JSON
+    }) 
     .then(data => {
         if (data.status === "success") {
-            console.log("Publication supprimée avec succès : ", data);
-            // Optionnel : Supprimer l'élément visuellement du DOM si nécessaire
-            document.getElementById(`publication-${id}`).remove();
-        } else {
-            console.error("Erreur lors de la suppression de la publication : ", data.message);
-        }
+            location.reload();
+        
+         } 
+         
     })
     .catch(error => {
         console.error("Une erreur est survenue : ", error);
     });
+
 }
