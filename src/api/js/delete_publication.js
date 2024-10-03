@@ -4,14 +4,11 @@ function deletePublication(id) {
         headers: {
             "Content-Type": "application/json"
         },
+        redirect: "follow",
         body: JSON.stringify({"publication_id": id}) // Envoi du bon paramètre
     }) 
     .then(data => {
-        if (data.status === "success") {
-            location.reload();
         
-         } 
-         
     })
     .catch(error => {
         console.error("Une erreur est survenue : ", error);
